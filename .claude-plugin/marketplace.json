@@ -1,21 +1,20 @@
 {
-  "name": "edmunds-claude-code",
+  "name": "multi-stack-claude-code",
   "owner": {
-    "name": "Edmund",
-    "contact": "github.com/edmund-io"
+    "name": "Rohan",
+    "contact": "github.com/rohan"
   },
-  "description": "Edmund's curated Claude Code setup for productive development",
+  "description": "Claude Code setup for multi-stack development with productivity commands and specialized AI agents",
   "plugins": [
     {
-      "name": "edmunds-claude-code",
+      "name": "multi-stack-claude-code",
       "source": "./",
-      "description": "Personal Claude Code configuration with 14 productivity commands and 11 specialized AI agents for modern web development",
+      "description": "Claude Code configuration with 7 productivity commands and 11 specialized AI agents for multi-stack development (Python, React, Node.js, Go, Rust, Flutter, Kotlin)",
       "version": "1.0.0",
       "author": {
-        "name": "Edmund",
-        "email": "[email protected]"
+        "name": "Rohan"
       },
-      "tags": ["productivity", "nextjs", "supabase", "typescript", "react", "development"]
+      "tags": ["productivity", "python", "fastapi", "react", "nodejs", "go", "rust", "flutter", "kotlin", "aws", "postgresql"]
     }
   ]
 }

@@ -9,44 +9,58 @@ Clean up and refactor the following code to improve readability, maintainability
 
 $ARGUMENTS
 
-## Cleanup Checklist for Solo Developers
+## Cleanup Checklist
 
 ### 1. **Code Smells to Fix**
 
 **Naming**
--  Descriptive variable/function names
--  Consistent naming conventions (camelCase, PascalCase)
--  Avoid abbreviations unless obvious
--  Boolean names start with is/has/can
+-  Descriptive variable/function names
+-  Consistent naming conventions
+-  Avoid abbreviations unless obvious
+-  Boolean names start with is/has/can
 
 **Functions**
--  Single responsibility per function
--  Keep functions small (<50 lines)
--  Reduce parameters (max 3-4)
--  Extract complex logic
--  Avoid side effects where possible
+-  Single responsibility per function
+-  Keep functions small (<50 lines)
+-  Reduce parameters (max 3-4)
+-  Extract complex logic
+-  Avoid side effects where possible
 
 **DRY (Don't Repeat Yourself)**
--  Extract repeated code to utilities
--  Create reusable components
--  Use TypeScript generics for type reuse
--  Centralize constants/configuration
+-  Extract repeated code to utilities
+-  Create reusable components/modules
+-  Use generics for type reuse
+-  Centralize constants/configuration
 
 **Complexity**
--  Reduce nested if statements
--  Replace complex conditions with functions
--  Use early returns
--  Simplify boolean logic
+-  Reduce nested if statements
+-  Replace complex conditions with functions
+-  Use early returns
+-  Simplify boolean logic
 
-**TypeScript**
--  Remove `any` types
--  Add proper type annotations
--  Use interfaces for object shapes
--  Leverage utility types (Pick, Omit, Partial)
+### 2. **Modern Patterns by Language**
 
-### 2. **Modern Patterns to Apply**
+**Python**
+```python
+# Use dataclasses
+from dataclasses import dataclass
 
-**JavaScript/TypeScript**
+@dataclass
+class User:
+    name: str
+    email: str
+
+# Use type hints
+def process(data: list[dict]) -> list[str]:
+    return [item["name"] for item in data]
+
+# Use context managers
+async with aiohttp.ClientSession() as session:
+    async with session.get(url) as response:
+        return await response.json()
+```
+
+**TypeScript/JavaScript**
 ```typescript
 // Use optional chaining
 const value = obj?.prop?.nested
@@ -57,80 +71,115 @@ const result = value ?? defaultValue
 // Use destructuring
 const { name, email } = user
 
-// Use template literals
-const message = `Hello, ${name}!`
-
-// Use array methods
-const filtered = arr.filter(x => x.active)
-```
-
-**React**
-```typescript
-// Extract custom hooks
-const useUserData = () => {
-  // logic here
-}
-
-// Use proper TypeScript types
+// Use proper types
 interface Props {
   user: User
   onUpdate: (user: User) => void
 }
+```
 
-// Avoid prop drilling with composition
-<Provider value={data}>
-  <Component />
-</Provider>
+**Go**
+```go
+// Use named returns for clarity
+func divide(a, b int) (result int, err error) {
+    if b == 0 {
+        return 0, errors.New("division by zero")
+    }
+    return a / b, nil
+}
+
+// Use defer for cleanup
+func processFile(path string) error {
+    f, err := os.Open(path)
+    if err != nil {
+        return err
+    }
+    defer f.Close()
+    // process file
+}
+```
+
+**Rust**
+```rust
+// Use Result and Option properly
+fn process(input: &str) -> Result<Output, Error> {
+    let parsed = input.parse()?;
+    Ok(transform(parsed))
+}
+
+// Use iterators
+let result: Vec<_> = items
+    .iter()
+    .filter(|x| x.active)
+    .map(|x| x.value)
+    .collect();
+```
+
+**Dart/Flutter**
+```dart
+// Use const constructors
+const MyWidget({super.key});
+
+// Use null safety
+final String? name = user?.name;
+final displayName = name ?? 'Unknown';
+
+// Use cascade notation
+final user = User()
+  ..name = 'John'
+  ..email = 'john@example.com';
 ```
 
 ### 3. **Refactoring Techniques**
 
 **Extract Function**
-```typescript
-// Before
-const process = () => {
-  // 50 lines of code
-}
+```python
+# Before
+def process():
+    # 50 lines of code
+    pass
 
-// After
-const validate = () => { /* ... */ }
-const transform = () => { /* ... */ }
-const save = () => { /* ... */ }
+# After
+def validate(data): ...
+def transform(data): ...
+def save(data): ...
 
-const process = () => {
-  validate()
-  const data = transform()
-  save(data)
-}
+def process():
+    validate(data)
+    result = transform(data)
+    save(result)
 ```
 
 **Replace Conditional with Polymorphism**
-```typescript
-// Before
-if (type === 'A') return processA()
-if (type === 'B') return processB()
+```python
+# Before
+if type == 'A':
+    return process_a()
+elif type == 'B':
+    return process_b()
 
-// After
-const processors = {
-  A: processA,
-  B: processB
+# After
+processors = {
+    'A': process_a,
+    'B': process_b
 }
 return processors[type]()
 ```
 
 **Introduce Parameter Object**
-```typescript
-// Before
-function create(name, email, age, address)
+```python
+# Before
+def create(name, email, age, address): ...
 
-// After
-interface UserData {
-  name: string
-  email: string
-  age: number
-  address: string
-}
-function create(userData: UserData)
+# After
+@dataclass
+class UserData:
+    name: str
+    email: str
+    age: int
+    address: str
+
+def create(user_data: UserData): ...
 ```
 
 ### 4. **Common Cleanup Tasks**
@@ -142,27 +191,28 @@ function create(userData: UserData)
 - Unused variables
 
 **Improve Error Handling**
-```typescript
-// Before
-try { doSomething() } catch (e) { console.log(e) }
+```python
+# Before
+try:
+    do_something()
+except Exception as e:
+    print(e)
 
-// After
-try {
-  doSomething()
-} catch (error) {
-  if (error instanceof ValidationError) {
-    // Handle validation
-  } else {
-    logger.error('Unexpected error', { error })
-    throw error
-  }
-}
+# After
+try:
+    do_something()
+except ValidationError as e:
+    logger.warning(f"Validation failed: {e}")
+    raise HTTPException(status_code=400, detail=str(e))
+except DatabaseError as e:
+    logger.error(f"Database error: {e}")
+    raise
 ```
 
 **Consistent Formatting**
 - Proper indentation
 - Consistent quotes
-- Line length (<100 characters)
+- Line length limits
 - Organized imports
 
 **Better Comments**
@@ -171,30 +221,31 @@ try {
 - Document complex logic
 - Update outdated comments
 
-### 5. **Next.js/React Specific**
+### 5. **Language-Specific Best Practices**
 
-**Server vs Client Components**
-```typescript
-// Move state to client component
-'use client'
-function Interactive() {
-  const [state, setState] = useState()
-}
+**Python**
+- Use pathlib instead of os.path
+- Use f-strings for formatting
+- Use enumerate() instead of range(len())
+- Use comprehensions appropriately
 
-// Keep data fetching in server component
-async function Page() {
-  const data = await fetchData()
-}
-```
+**Go**
+- Handle all errors
+- Use short variable declarations
+- Group related declarations
+- Use table-driven tests
 
-**Proper Data Fetching**
-```typescript
-// Use SWR/React Query for client
-const { data } = useSWR('/api/user')
+**Rust**
+- Use ? for error propagation
+- Prefer &str over String when borrowing
+- Use clippy suggestions
+- Document public APIs
 
-// Use direct fetch in server components
-const data = await fetch('/api/user').then(r => r.json())
-```
+**Flutter**
+- Extract widgets for reusability
+- Use BuildContext correctly
+- Dispose controllers properly
+- Use const where possible
 
 ## Output Format
 

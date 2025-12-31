@@ -9,7 +9,7 @@ Optimize the following code for performance and efficiency.
 
 $ARGUMENTS
 
-## Optimization Strategy for Solo Developers
+## Optimization Strategy
 
 ### 1. **Profiling First**
 - Identify actual bottlenecks
@@ -19,121 +19,142 @@ $ARGUMENTS
 
 ### 2. **Performance Optimization Areas**
 
-**React/Next.js**
-- Memoization (React.memo, useMemo, useCallback)
-- Code splitting and lazy loading
-- Image optimization (next/image)
-- Font optimization (next/font)
-- Remove unnecessary re-renders
-- Virtual scrolling for long lists
+**Python (FastAPI/Flask)**
+- Use async/await for I/O-bound operations
+- Connection pooling for databases
+- Use generators for large datasets
+- Caching with Redis or in-memory
+- Profile with cProfile, py-spy
+- Use uvloop for async performance
 
-**Database Queries**
+**JavaScript/TypeScript (Node.js/Express/React)**
+- Event loop optimization
+- Cluster mode for CPU-bound tasks
+- Memoization (useMemo, useCallback for React)
+- Code splitting and lazy loading
+- Stream large responses
+- Use worker threads for heavy computation
+
+**Go**
+- Goroutine optimization
+- Channel buffering strategies
+- Memory pooling (sync.Pool)
+- Reduce allocations
+- Profile with pprof
+- Use benchmarks (go test -bench)
+
+**Rust**
+- Avoid unnecessary clones
+- Use references and borrowing efficiently
+- Leverage zero-cost abstractions
+- Profile with flamegraph/perf
+- Use release builds with LTO
+
+**Flutter/Dart**
+- Widget rebuild optimization (const constructors)
+- Lazy loading and pagination
+- Image caching and optimization
+- Avoid expensive operations in build()
+- Use isolates for heavy computation
+
+**Kotlin (Android/AR Core)**
+- Avoid object allocations in loops
+- Use sequences for lazy evaluation
+- Coroutine optimization
+- Memory leak prevention
+- Profile with Android Profiler
+
+**Database Queries (AWS RDS PostgreSQL)**
 - Add indexes for frequently queried fields
+- Use EXPLAIN ANALYZE
 - Batch queries (reduce N+1 problems)
-- Use select to limit fields
+- Use SELECT with specific columns
 - Implement pagination
-- Cache frequent queries
-- Use database views for complex joins
+- Connection pooling (PgBouncer)
+- Optimize JOINs and subqueries
 
 **API Calls**
-- Implement caching (SWR, React Query)
+- Implement caching strategies
 - Debounce/throttle requests
 - Parallel requests where possible
 - Request deduplication
 - Optimistic updates
 
-**Bundle Size**
-- Tree-shaking unused code
-- Dynamic imports for large libraries
-- Replace heavy dependencies
-- Code splitting by route
-- Lazy load below-the-fold content
-
-**Memory**
-- Fix memory leaks (cleanup useEffect)
-- Avoid unnecessary object creation
-- Use const for non-changing values
-- Clear intervals/timeouts
-- Remove event listeners
-
 ### 3. **Optimization Checklist**
 
-**JavaScript/TypeScript**
--  Use const/let instead of var
--  Avoid nested loops where possible
--  Use Map/Set for lookups
--  Minimize DOM manipulations
--  Debounce/throttle expensive operations
+**General**
+-  Use appropriate data structures (HashMap vs List)
+-  Avoid nested loops where possible
+-  Cache expensive computations
+-  Minimize I/O operations
+-  Batch database operations
 
-**React**
--  Memo components that render often
--  Move static values outside components
--  Use keys properly in lists
--  Avoid inline functions in render
--  Lazy load routes and components
+**Memory**
+-  Fix memory leaks
+-  Use object pooling for frequent allocations
+-  Stream large data instead of loading all
+-  Clear references when done
+-  Profile memory usage
 
-**Next.js**
--  Use Server Components where possible
--  Implement ISR for dynamic content
--  Optimize images with next/image
--  Prefetch critical routes
--  Use Suspense for streaming
-
-**Database**
--  Add indexes on foreign keys
--  Use prepared statements
--  Batch inserts/updates
--  Implement connection pooling
--  Cache expensive queries
+**Concurrency**
+-  Use async for I/O-bound tasks
+-  Use threads/workers for CPU-bound tasks
+-  Avoid lock contention
+-  Use appropriate concurrency primitives
 
 **Network**
--  Compress responses (gzip/brotli)
--  Use CDN for static assets
--  Implement HTTP/2
--  Set proper cache headers
--  Minimize payload size
+-  Compress responses (gzip/brotli)
+-  Use CDN for static assets
+-  Minimize payload size
+-  Implement proper caching headers
+-  Use HTTP/2 or HTTP/3
 
 ### 4. **Measurement Tools**
 
-**Frontend**
-- Chrome DevTools Performance tab
-- Lighthouse CI
-- React DevTools Profiler
-- Bundle Analyzer (next/bundle-analyzer)
-
-**Backend**
-- Node.js profiler
-- Database query analyzer
-- APM tools (DataDog, New Relic)
-- Load testing (k6, Artillery)
+**Python**: cProfile, py-spy, memory_profiler, line_profiler
+**JavaScript/Node.js**: Chrome DevTools, clinic.js, 0x
+**Go**: pprof, trace, benchstat
+**Rust**: flamegraph, perf, criterion
+**Flutter**: DevTools, Observatory
+**Kotlin/Android**: Android Profiler, LeakCanary
+**Database**: EXPLAIN ANALYZE, pg_stat_statements, AWS RDS Performance Insights
 
 ### 5. **Common Optimizations**
 
-**Replace inefficient array methods**
-```typescript
-// Before: Multiple iterations
-const result = arr
-  .filter(x => x > 0)
-  .map(x => x * 2)
-  .reduce((sum, x) => sum + x, 0)
+**Replace inefficient iterations**
+```python
+# Python - Before: Multiple iterations
+result = sum(x * 2 for x in arr if x > 0)
 
-// After: Single iteration
-const result = arr.reduce((sum, x) => {
-  return x > 0 ? sum + (x * 2) : sum
-}, 0)
+# After: Single pass with filter and map
+from itertools import filterfalse
+result = sum(map(lambda x: x * 2, filter(lambda x: x > 0, arr)))
 ```
 
-**Memoize expensive calculations**
-```typescript
-const expensiveValue = useMemo(() => {
-  return complexCalculation(props.data)
-}, [props.data])
+```go
+// Go - Use pre-allocated slices
+// Before
+var result []int
+for _, v := range data {
+    result = append(result, v*2)
+}
+
+// After
+result := make([]int, len(data))
+for i, v := range data {
+    result[i] = v * 2
+}
 ```
 
-**Virtual scrolling for long lists**
-```typescript
-import { useVirtual } from 'react-virtual'
-// Only render visible items
+**Database query optimization**
+```sql
+-- Before: N+1 query
+SELECT * FROM users;
+-- Then for each user: SELECT * FROM orders WHERE user_id = ?
+
+-- After: Single JOIN
+SELECT u.*, o.* FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
 ```
 
 ## Output Format
@@ -145,4 +166,4 @@ import { useVirtual } from 'react-virtual'
 5. **Trade-offs** - Any complexity added
 6. **Next Steps** - Further optimization opportunities
 
-Focus on practical, measurable optimizations that provide real user value. Don't sacrifice readability for micro-optimizations.
+Focus on practical, measurable optimizations that provide real value. Don't sacrifice readability for micro-optimizations.

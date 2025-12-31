@@ -17,7 +17,7 @@ $ARGUMENTS
 - List affected files/components
 - Estimate complexity (Small/Medium/Large)
 
-### 2. **Time Estimation**
+### 2. **Complexity Estimation**
 - **Small**: 1-2 hours (simple bug fix, minor feature)
 - **Medium**: Half day to 1 day (new component, API endpoint)
 - **Large**: 2-5 days (complex feature, multiple integrations)
@@ -55,28 +55,29 @@ Define "done":
 ### Task Analysis
 - **Type**: [Bug Fix / Feature / Refactor / Infrastructure]
 - **Complexity**: [Small / Medium / Large / Very Large]
-- **Estimated Time**: X hours/days
 - **Priority**: [High / Medium / Low]
 
 ### Implementation Plan
 
-**Phase 1: [Name]** (Time estimate)
+**Phase 1: [Name]**
 - [ ] Step 1
 - [ ] Step 2
 
-**Phase 2: [Name]** (Time estimate)
+**Phase 2: [Name]**
 - [ ] Step 3
 - [ ] Step 4
 
 ### Files to Modify/Create
 ```
-app/page.tsx (modify)
-components/NewComponent.tsx (create)
-lib/utils.ts (modify)
+src/api/endpoint.py (modify)
+src/services/new_service.py (create)
+src/utils/helpers.py (modify)
 ```
 
 ### Dependencies
 ```bash
+pip install package-name
+# or
 npm install package-name
 ```
 
@@ -94,4 +95,4 @@ npm install package-name
 2. Test incrementally
 3. Commit often
 
-Provide a clear, solo-developer-friendly plan that breaks down complex tasks into manageable steps.
+Provide a clear, actionable plan that breaks down complex tasks into manageable steps.

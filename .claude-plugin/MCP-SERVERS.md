@@ -1,6 +1,6 @@
 # MCP Servers Included
 
-This plugin includes 3 pre-configured MCP servers that enhance Claude Code's capabilities.
+This plugin includes 2 pre-configured MCP servers that enhance Claude Code's capabilities.
 
 ## Included Servers
 
@@ -31,30 +31,6 @@ This plugin includes 3 pre-configured MCP servers that enhance Claude Code's cap
 - Browser automation
 - Visual testing
 
-### 3. **Supabase** (`@supabase/mcp-server-supabase`)
-**Purpose**: Supabase database operations
-
-**Capabilities**:
-- Query databases
-- Manage tables
-- Execute SQL
-- Handle authentication
-- Work with storage
-
-**Use Cases**:
-- Database management
-- Schema exploration
-- Data queries
-- Admin operations
-
-## Servers Not Included (Not Yet Available)
-
-The following servers were requested but don't have official MCP implementations yet:
-
-- **chrome-devtools** - No official MCP server found
-- **stripe** - No official MCP server found (as of Oct 2025)
-- **vercel** - No official MCP server found
-
 ## Using MCP Servers
 
 After installing this plugin:
@@ -74,6 +50,33 @@ You can add custom MCP servers to your local `.claude/.mcp.json`:
     "args": ["-y", "package-name"],
     "env": {
       "API_KEY": "your-key"
+    }
+  }
+}
+```
+
+### Useful MCP Servers for Your Stack
+
+**AWS** (if available):
+```json
+{
+  "aws": {
+    "command": "aws-mcp",
+    "env": {
+      "AWS_PROFILE": "default"
+    }
+  }
+}
+```
+
+**PostgreSQL**:
+```json
+{
+  "postgres": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-postgres"],
+    "env": {
+      "DATABASE_URL": "postgresql://..."
     }
   }
 }

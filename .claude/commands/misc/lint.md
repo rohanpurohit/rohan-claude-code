@@ -9,96 +9,146 @@ Run linting and fix code quality issues in the codebase.
 
 $ARGUMENTS
 
-## Lint Strategy for Solo Developers
+## Lint Strategy
 
 ### 1. **Run Linting Commands**
 
+**Python**
 ```bash
-# ESLint (JavaScript/TypeScript)
-npm run lint
-npx eslint . --fix
+# Ruff (fast, recommended)
+ruff check . --fix
+ruff format .
 
-# TypeScript Compiler
-npx tsc --noEmit
-
-# Prettier (formatting)
-npx prettier --write .
-
-# All together
-npm run lint && npx tsc --noEmit && npx prettier --write .
+# Or traditional tools
+flake8 .
+black .
+isort .
+mypy .
 ```
 
-### 2. **Common ESLint Issues**
+**JavaScript/TypeScript**
+```bash
+npm run lint
+npx eslint . --fix
+npx prettier --write .
+npx tsc --noEmit
+```
 
-**TypeScript Errors**
+**Go**
+```bash
+go fmt ./...
+go vet ./...
+golangci-lint run --fix
+staticcheck ./...
+```
+
+**Rust**
+```bash
+cargo fmt
+cargo clippy --fix
+cargo check
+```
+
+**Flutter/Dart**
+```bash
+dart fix --apply
+dart format .
+flutter analyze
+```
+
+**Kotlin**
+```bash
+ktlint --format
+detekt
+```
+
+### 2. **Common Issues by Language**
+
+**Python**
+- Missing type hints
+- Unused imports
+- Line too long (>88 chars)
+- Missing docstrings
+- Incorrect indentation
+
+**TypeScript/JavaScript**
 - Missing type annotations
 - `any` types used
 - Unused variables
 - Missing return types
-
-**React/Next.js Issues**
-- Missing keys in lists
-- Unsafe useEffect dependencies
-- Unescaped entities in JSX
-- Missing alt text on images
-
-**Code Quality**
-- Unused imports
 - Console.log statements
-- Debugger statements
-- TODO comments
 
-**Best Practices**
-- No var, use const/let
-- Prefer const over let
-- No nested ternaries
-- Consistent return statements
+**Go**
+- Unused variables/imports
+- Missing error handling
+- Shadowed variables
+- Ineffective assignments
+- Missing comments on exports
+
+**Rust**
+- Unused variables/imports
+- Unnecessary clones
+- Missing documentation
+- Clippy warnings
+- Unused Results
+
+**Dart/Flutter**
+- Unused imports
+- Missing const constructors
+- Avoid print() in production
+- Prefer final for unchanging values
 
 ### 3. **Auto-Fix What You Can**
 
 **Safe Auto-Fixes**
-```bash
-# Fix formatting
-prettier --write .
-
-# Fix ESLint auto-fixable rules
-eslint --fix .
-
-# Fix import order
-eslint --fix --rule 'import/order: error' .
-```
+- Import ordering/removal
+- Formatting (indentation, spacing)
+- Simple type annotations
+- Trailing whitespace
+- Line endings
 
 **Manual Fixes Needed**
-- Type annotations
+- Complex type annotations
 - Logic errors
 - Missing error handling
-- Accessibility issues
+- Security issues
 
-### 4. **Lint Configuration**
+### 4. **Lint Configuration Examples**
 
-**ESLint Config** (`.eslintrc.json`)
+**Python (pyproject.toml)**
+```toml
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.mypy]
+strict = true
+```
+
+**TypeScript (.eslintrc.json)**
 ```json
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": "error",
-    "no-console": "warn"
+    "@typescript-eslint/no-unused-vars": "error"
   }
 }
 ```
 
-**Prettier Config** (`.prettierrc`)
-```json
-{
-  "semi": false,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5"
-}
+**Go (.golangci.yml)**
+```yaml
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - staticcheck
+```
+
+**Rust (clippy.toml)**
+```toml
+cognitive-complexity-threshold = 25
 ```
 
 ### 5. **Priority Fixes**
@@ -107,7 +157,7 @@ eslint --fix --rule 'import/order: error' .
 - Type errors blocking build
 - Security vulnerabilities
 - Runtime errors
-- Broken accessibility
+- Broken functionality
 
 **Medium Priority** (fix before commit)
 - Missing type annotations
@@ -122,40 +172,29 @@ eslint --fix --rule 'import/order: error' .
 
 ### 6. **Pre-Commit Hooks** (Recommended)
 
-**Install Husky + lint-staged**
-```bash
-npm install -D husky lint-staged
-npx husky init
+**Python (pre-commit-config.yaml)**
+```yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    hooks:
+      - id: ruff
+      - id: ruff-format
 ```
 
-**Configure** (`.husky/pre-commit`)
-```bash
-npx lint-staged
-```
-
-**lint-staged config** (`package.json`)
+**JavaScript (Husky + lint-staged)**
 ```json
 {
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
   }
 }
 ```
 
-### 7. **VSCode Integration**
-
-**Settings** (`.vscode/settings.json`)
-```json
-{
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "typescript.tsdk": "node_modules/typescript/lib"
-}
+**Go**
+```bash
+# In .git/hooks/pre-commit
+go fmt ./...
+go vet ./...
 ```
 
 ## What to Generate
@@ -165,38 +204,5 @@ npx lint-staged
 3. **Manual Fix Suggestions** - Issues requiring manual intervention
 4. **Priority List** - Ordered by severity
 5. **Configuration Recommendations** - Improve lint setup
-
-## Common Fixes
-
-**Remove Unused Imports**
-```typescript
-// Before
-import { A, B, C } from 'lib'
-
-// After
-import { A, C } from 'lib'  // B was unused
-```
-
-**Add Type Annotations**
-```typescript
-// Before
-function process(data) {
-  return data.map(x => x.value)
-}
-
-// After
-function process(data: DataItem[]): number[] {
-  return data.map(x => x.value)
-}
-```
-
-**Fix Missing Keys**
-```typescript
-// Before
-{items.map(item => <div>{item.name}</div>)}
-
-// After
-{items.map(item => <div key={item.id}>{item.name}</div>)}
-```
 
 Focus on fixes that improve code quality and prevent bugs. Run linting before every commit.
